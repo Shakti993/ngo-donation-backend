@@ -39,20 +39,18 @@ public class SecurityConfig {
             throws Exception {
 
         http
-                .csrf(csrf -> csrf.disable())
+                        .csrf(csrf -> csrf.disable())
 
-                .sessionManagement(session ->
-                        session.sessionCreationPolicy(
-                                SessionCreationPolicy.STATELESS))
+                        .sessionManagement(session -> session.sessionCreationPolicy(
+                                        SessionCreationPolicy.STATELESS))
 
-                .authorizeHttpRequests(auth -> auth
-                        .requestMatchers(
-                                "/api/auth/**"
-                        ).permitAll()
-
-                        .anyRequest()
-                        .authenticated()
-                )
+                        .authorizeHttpRequests(auth -> auth
+                                        .requestMatchers("/api/auth/**").permitAll()
+                                        .requestMatchers("/api/categories/**").permitAll()
+                                        .requestMatchers("/api/campaigns/**").permitAll()
+                                        .requestMatchers("/api/admin/**").hasRole("ADMIN")
+                                        .anyRequest()
+                                        .authenticated())
 
                 .httpBasic(Customizer.withDefaults())
 
