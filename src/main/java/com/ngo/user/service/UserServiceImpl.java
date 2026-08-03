@@ -75,17 +75,10 @@ public class UserServiceImpl implements UserService {
     return new LoginResponseDto(token);
 }
 
-    @Override
+@Override
 public CurrentUserResponseDto getCurrentUser() {
 
-    String email = SecurityContextHolder
-            .getContext()
-            .getAuthentication()
-            .getName();
-
-    User user = userRepository.findByEmail(email)
-            .orElseThrow(() ->
-                    new BusinessException("User not found"));
+    User user = getCurrentAuthenticatedUser();
 
     return new CurrentUserResponseDto(
             user.getFirstName(),
@@ -93,6 +86,19 @@ public CurrentUserResponseDto getCurrentUser() {
             user.getEmail(),
             user.getRole().getRoleName()
     );
+}
+
+@Override
+public User getCurrentAuthenticatedUser() {
+
+        String email = SecurityContextHolder
+                        .getContext()
+                        .getAuthentication()
+                        .getName();
+
+        return userRepository.findByEmail(email)
+                        .orElseThrow(() -> new BusinessException(
+                                        "User not found"));
 }
 
 }

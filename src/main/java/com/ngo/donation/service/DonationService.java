@@ -25,6 +25,12 @@ import org.springframework.transaction.annotation.Transactional;
 import java.math.BigDecimal;
 import java.util.List;
 
+import com.ngo.user.repository.UserRepository;
+import com.ngo.user.entity.User;
+
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+
 
 @Service
 @RequiredArgsConstructor
@@ -33,6 +39,8 @@ public class DonationService {
     private final DonationRepository donationRepository;
 
     private final CampaignRepository campaignRepository;
+
+    private final UserRepository userRepository;
 
     private final RazorpayService razorpayService;
 
@@ -102,14 +110,34 @@ public class DonationService {
 
         donation.setCampaign(campaign );
 
-        /*
-         * Guest donation for now.
-         *
-         * We will associate authenticated
-         * donors separately.
-         */
-        donation.setUser(null);
+        Authentication authentication =
+        SecurityContextHolder
+                .getContext()
+                .getAuthentication();
 
+        /*
+         * Associate the donation with the
+         * currently authenticated user.
+         *
+         * Guest donations remain supported.
+         */
+        if (authentication != null &&
+                authentication.isAuthenticated() &&
+                !"anonymousUser".equals(
+                        authentication.getName())) {
+
+            User user = userRepository
+                    .findByEmail(
+                            authentication.getName())
+                    .orElse(null);
+
+            donation.setUser(user);
+
+        } else {
+
+            donation.setUser(null);
+
+        }
 
         donation.setDonorName(
             request

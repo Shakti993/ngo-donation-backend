@@ -47,7 +47,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         try {
             email = jwtService.extractEmail(jwtToken);
-            System.out.println("Email From Token = " + email);
         } catch (Exception ex) {
             ex.printStackTrace();
             filterChain.doFilter(request, response);
