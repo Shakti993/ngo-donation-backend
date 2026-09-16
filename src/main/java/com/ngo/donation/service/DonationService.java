@@ -56,17 +56,8 @@ public class DonationService {
         // 1. Find campaign
         // -----------------------------------------
 
-        Campaign campaign =
-            campaignRepository
-                .findById(
-                    request.getCampaignId()
-                )
-                .orElseThrow(
-                    () ->
-                        new IllegalArgumentException(
-                            "Campaign not found"
-                        )
-                );
+        Campaign campaign = campaignRepository.findById(request.getCampaignId()).orElseThrow(() ->
+                        new IllegalArgumentException("Campaign not found"));
 
 
         // -----------------------------------------
@@ -84,9 +75,7 @@ public class DonationService {
         // -----------------------------------------
 
         if (!Boolean.TRUE.equals(campaign.getIsActive())) {
-            throw new BusinessException(
-                "Campaign is not active"
-            );
+            throw new BusinessException( "Campaign is not active");
         }
 
 
@@ -96,9 +85,7 @@ public class DonationService {
 
         if (campaign.getStatus() != CampaignStatus.ACTIVE ) {
 
-            throw new BusinessException(
-                "Campaign is not accepting donations"
-            );
+            throw new BusinessException("Campaign is not accepting donations" );
         }
 
 
@@ -110,10 +97,7 @@ public class DonationService {
 
         donation.setCampaign(campaign );
 
-        Authentication authentication =
-        SecurityContextHolder
-                .getContext()
-                .getAuthentication();
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         /*
          * Associate the donation with the
@@ -121,16 +105,9 @@ public class DonationService {
          *
          * Guest donations remain supported.
          */
-        if (authentication != null &&
-                authentication.isAuthenticated() &&
-                !"anonymousUser".equals(
-                        authentication.getName())) {
+        if (authentication != null && authentication.isAuthenticated() && !"anonymousUser".equals(authentication.getName())) {
 
-            User user = userRepository
-                    .findByEmail(
-                            authentication.getName())
-                    .orElse(null);
-
+            User user = userRepository.findByEmail(authentication.getName()).orElse(null);
             donation.setUser(user);
 
         } else {
@@ -139,11 +116,7 @@ public class DonationService {
 
         }
 
-        donation.setDonorName(
-            request
-                .getDonorName()
-                .trim()
-        );
+        donation.setDonorName(request.getDonorName().trim());
 
 
         donation.setDonorEmail(

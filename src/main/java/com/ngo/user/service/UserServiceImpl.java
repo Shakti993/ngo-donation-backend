@@ -6,11 +6,13 @@ import com.ngo.exception.BusinessException;
 import com.ngo.role.entity.Role;
 import com.ngo.role.repository.RoleRepository;
 import com.ngo.user.dto.CurrentUserResponseDto;
+import com.ngo.user.dto.UpdateProfileRequestDto;
 import com.ngo.user.entity.User;
 import com.ngo.security.jwt.JwtService;
 import com.ngo.user.repository.UserRepository;
 import com.ngo.auth.dto.LoginResponseDto;
 import lombok.RequiredArgsConstructor;
+import com.ngo.user.dto.ChangePasswordRequestDto;
 
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -84,6 +86,7 @@ public CurrentUserResponseDto getCurrentUser() {
             user.getFirstName(),
             user.getLastName(),
             user.getEmail(),
+             user.getMobile(),
             user.getRole().getRoleName()
     );
 }
@@ -99,6 +102,60 @@ public User getCurrentAuthenticatedUser() {
         return userRepository.findByEmail(email)
                         .orElseThrow(() -> new BusinessException(
                                         "User not found"));
+}
+
+@Override
+public void updateProfile(UpdateProfileRequestDto request) {
+
+        String email = SecurityContextHolder
+                        .getContext()
+                        .getAuthentication()
+                        .getName();
+
+        User user = userRepository.findByEmail(email)
+                        .orElseThrow(() -> new BusinessException("User not found"));
+
+        user.setFirstName(request.getFirstName());
+        user.setLastName(request.getLastName());
+        user.setMobile(request.getMobile());
+
+        userRepository.save(user);
+
+}
+
+@Override
+public void changePassword(ChangePasswordRequestDto request) {
+
+        User user = getCurrentAuthenticatedUser();
+
+        if (!passwordEncoder.matches(
+                        request.getCurrentPassword(),
+                        user.getPassword())) {
+
+                throw new BusinessException(
+                                "Current password is incorrect");
+        }
+
+        if (request.getCurrentPassword()
+                        .equals(request.getNewPassword())) {
+
+                throw new BusinessException(
+                                "New password must be different from current password");
+        }
+
+        if (!request.getNewPassword()
+                        .equals(request.getConfirmPassword())) {
+
+                throw new BusinessException(
+                                "New password and confirm password do not match");
+        }
+
+        user.setPassword(
+                        passwordEncoder.encode(
+                                        request.getNewPassword()));
+
+        userRepository.save(user);
+
 }
 
 }

@@ -23,8 +23,7 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 @Transactional
-public class CampaignServiceImpl
-        implements CampaignService {
+public class CampaignServiceImpl implements CampaignService {
 
     private final CampaignRepository campaignRepository;
     private final CategoryRepository categoryRepository;
@@ -38,10 +37,7 @@ public class CampaignServiceImpl
     @Override
     public CampaignResponseDto createCampaign(CreateCampaignRequestDto request,String adminEmail) {
 
-        validateDates(
-                request.getStartDate(),
-                request.getEndDate()
-        );
+        validateDates( request.getStartDate(), request.getEndDate() );
 
         Category category =
                 findActiveCategory(

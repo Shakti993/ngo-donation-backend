@@ -23,13 +23,9 @@ public class GlobalExceptionHandler {
      * - invalid email
      * - donation amount below minimum
      */
-    @ExceptionHandler(
-        MethodArgumentNotValidException.class
-    )
-    public ResponseEntity<ApiResponse<Void>>
-        handleValidationException(
-            MethodArgumentNotValidException ex
-        ) {
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<ApiResponse<Void>>handleValidationException(MethodArgumentNotValidException ex)
+     {
 
         String errorMessage =
             ex.getBindingResult()
@@ -38,10 +34,7 @@ public class GlobalExceptionHandler {
                 .getDefaultMessage();
 
 
-        return ResponseEntity
-            .badRequest()
-            .body(
-                new ApiResponse<>(
+        return ResponseEntity.badRequest().body(new ApiResponse<>(
                     false,
                     errorMessage,
                     null
@@ -57,23 +50,10 @@ public class GlobalExceptionHandler {
      * - campaign inactive
      * - campaign not accepting donations
      */
-    @ExceptionHandler(
-        BusinessException.class
-    )
-    public ResponseEntity<ApiResponse<Void>>
-        handleBusinessException(
-            BusinessException ex
-        ) {
-
-        return ResponseEntity
-            .badRequest()
-            .body(
-                new ApiResponse<>(
-                    false,
-                    ex.getMessage(),
-                    null
-                )
-            );
+    @ExceptionHandler(BusinessException.class)
+    public ResponseEntity<ApiResponse<Void>>handleBusinessException(BusinessException ex )
+     {
+        return ResponseEntity.badRequest().body(new ApiResponse<>(false,ex.getMessage(),null));
     }
 
 
@@ -86,18 +66,10 @@ public class GlobalExceptionHandler {
      * We can introduce a dedicated
      * ResourceNotFoundException later if needed.
      */
-    @ExceptionHandler(
-        IllegalArgumentException.class
-    )
-    public ResponseEntity<ApiResponse<Void>>
-        handleIllegalArgumentException(
-            IllegalArgumentException ex
-        ) {
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<ApiResponse<Void>>handleIllegalArgumentException(IllegalArgumentException ex) {
 
-        return ResponseEntity
-            .status(HttpStatus.NOT_FOUND)
-            .body(
-                new ApiResponse<>(
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ApiResponse<>(
                     false,
                     ex.getMessage(),
                     null

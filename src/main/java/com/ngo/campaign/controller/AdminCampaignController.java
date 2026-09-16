@@ -32,11 +32,7 @@ public class AdminCampaignController {
                     @RequestBody CreateCampaignRequestDto request,
                     Authentication authentication) {
 
-        CampaignResponseDto campaign =
-                campaignService.createCampaign(
-                        request,
-                        authentication.getName()
-                );
+        CampaignResponseDto campaign = campaignService.createCampaign( request, authentication.getName());
 
         return ResponseEntity
                 .status(HttpStatus.CREATED)

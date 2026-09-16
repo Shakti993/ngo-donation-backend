@@ -28,8 +28,7 @@ public class DonationController {
     // =====================================================
 
     @PostMapping
-    public ResponseEntity<ApiResponse<DonationResponseDto>>
-        createDonation(
+    public ResponseEntity<ApiResponse<DonationResponseDto>> createDonation(
             @Valid
             @RequestBody
             CreateDonationRequestDto request
@@ -55,13 +54,10 @@ public class DonationController {
     // =====================================================
 
     @GetMapping("/{id}")
-    public ResponseEntity<ApiResponse<DonationResponseDto>>
-        getDonation(
-            @PathVariable Long id
-        ) {
+    public ResponseEntity<ApiResponse<DonationResponseDto>> getDonation(@PathVariable Long id ) 
+    {
 
-        DonationResponseDto donation =
-            donationService.getDonation(id);
+        DonationResponseDto donation =  donationService.getDonation(id);
 
 
         return ResponseEntity.ok(

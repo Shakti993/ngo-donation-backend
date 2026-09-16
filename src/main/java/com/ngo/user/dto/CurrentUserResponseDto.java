@@ -10,5 +10,6 @@ public class CurrentUserResponseDto {
     private String firstName;
     private String lastName;
     private String email;
+    private String mobile;
     private String role;
 }
